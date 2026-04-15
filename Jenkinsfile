@@ -1,9 +1,9 @@
 pipeline {
-    agent any
-
-    tools {
-        maven 'Maven-3.9'
-        jdk 'JDK-21'
+    agent {
+        docker {
+            image 'maven:3.9.9-eclipse-temurin-21'
+            args '-v $HOME/.m2:/root/.m2'  // cache dependencies
+        }
     }
 
     stages {
@@ -11,6 +11,15 @@ pipeline {
             steps {
                 sh 'mvn clean install -DskipTests'
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build successful using Docker'
+        }
+        failure {
+            echo '❌ Build failed'
         }
     }
 }
