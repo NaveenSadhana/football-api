@@ -27,6 +27,7 @@ spec:
         skipStagesAfterUnstable()
         timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
+        skipDefaultCheckout(true)   // prevent @script cache corruption on restart
     }
 
     stages {
@@ -58,4 +59,3 @@ spec:
         }
     }
 }
-
