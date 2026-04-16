@@ -6,9 +6,26 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:3355.v388858a_47b_33-3-jdk21
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: HTTP_PROXY
+      value: "http://192.168.64.8:9001"
+    - name: HTTPS_PROXY
+      value: "http://192.168.64.8:9001"
+    - name: NO_PROXY
+      value: "localhost,127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,jenkins.jenkins.svc.cluster.local"
   - name: maven
     image: maven:3.9.9-eclipse-temurin-21
     imagePullPolicy: IfNotPresent
+    env:
+    - name: HTTP_PROXY
+      value: "http://192.168.64.8:9001"
+    - name: HTTPS_PROXY
+      value: "http://192.168.64.8:9001"
+    - name: NO_PROXY
+      value: "localhost,127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,jenkins.jenkins.svc.cluster.local"
     command:
     - cat
     tty: true
