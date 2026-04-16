@@ -11,11 +11,32 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "2"
 """
         }
     }
 
+    options {
+        disableConcurrentBuilds()
+        skipStagesAfterUnstable()
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                cleanWs()       // wipe workspace before checkout
+                checkout scm    // fresh clone every time
+            }
+        }
+
         stage('Build') {
             steps {
                 container('maven') {
@@ -24,4 +45,17 @@ spec:
             }
         }
     }
+
+    post {
+        always {
+            cleanWs()   // clean workspace after every build
+        }
+        success {
+            echo '✅ Build succeeded!'
+        }
+        failure {
+            echo '❌ Build failed!'
+        }
+    }
 }
+
